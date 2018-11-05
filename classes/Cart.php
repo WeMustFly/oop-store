@@ -22,7 +22,7 @@ class Cart
     public function addProduct(Product $product)
     {
         if (empty($this->purchase)) {
-           $this->products[] = $product;
+            $this->products[] = $product;
         }
     }
 
@@ -41,5 +41,11 @@ class Cart
     {
         $this->purchase = new Purchase($this);
         return $this->purchase;
+    }
+
+    public function removeProduct(Product $product)
+    {
+        $removedProductKey = array_search($product, $this->products);
+        unset($this->products[$removedProductKey]);
     }
 }
