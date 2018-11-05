@@ -15,6 +15,11 @@ class Product
         $this->price = $price;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+    
     public function setPrice($price)
     {
         if ($price > 0) {
