@@ -25,6 +25,16 @@ class Cart
            $this->products[] = $product;
         }
     }
+    
+    public function delProduct(Product $product)  // removes one unit of product
+    {
+        foreach ($this->products as $key => $value) {
+            if ($value->getName() == $product->getName()) {
+                unset($this->products[$key]);
+                return;
+            }
+        }
+    }    
 
     public function getTotal()
     {
