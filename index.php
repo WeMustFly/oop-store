@@ -20,6 +20,16 @@ $cart = new \OOPStore\Cart($customer);
 
 $cart->addProduct($product);
 $cart->addProduct($product);
+$cart->addProduct($product);
+
+$cart->delProduct($product);
+
+$cart->addProduct($product);
+$cart->addProduct($product);
+$cart->addProduct($product);
+
+$cart->delProduct($product);
+
 
 echo "Total: ";
 var_dump($cart->getTotal());
