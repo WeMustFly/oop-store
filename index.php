@@ -8,22 +8,19 @@ spl_autoload_register(function ($class) {
     require_once(CLASSES_DIR . DIRECTORY_SEPARATOR . end($className) . '.php');
 });
 
+$emailPost = $_POST['email'] ?? 'default';
+$passwordPost = $_POST['password'] ?? 'default';
+$firstNamePost = $_POST['firstName'] ?? 'default';
+$lastNamePost = $_POST['lastName'] ?? 'default';
+$app = $_GET['app'] ?? '';
+
 session_start();
 $view = new \OOPStore\Output();
 
-$view->setVars('{LOGIN_ERROR}', '');
-$view->setVars('{REGISTER_ERROR}', '');
-$view->setVars('{CART_TABLE}', '');
-$view->setVars('{CART_TOTAL}', '0');
-
-
 if (empty($_SESSION)) {
-    if ($_GET['app'] === 'login') {
-        $email = $_POST['email'] ?? 'default';
-        $password = $_POST['password'] ?? 'default';
-        
+    if ($app === 'login') {
         $auth = new \OOPStore\Auth();
-        $customerAuth = new \OOPStore\Customer('', '', $email, $password);
+        $customerAuth = new \OOPStore\Customer('', '', $emailPost, $passwordPost);
 
         $customer = $auth->login($customerAuth);
         
@@ -36,14 +33,9 @@ if (empty($_SESSION)) {
         }
     }
 
-    if ($_GET['app'] === 'register') {
-        $email = $_POST['email'] ?? 'default';
-        $password = $_POST['password'] ?? 'default';
-        $firstName = $_POST['firstName'] ?? 'default';
-        $lastName = $_POST['lastName'] ?? 'default';
-
+    if ($app === 'register') {
         $auth = new \OOPStore\Auth();
-        $customerRegister = new \OOPStore\Customer($firstName, $lastName, $email, $password);
+        $customerRegister = new \OOPStore\Customer($firstNamePost, $lastNamePost, $emailPost, $passwordPost);
 
         $customer = $auth->register($customerRegister);
         
@@ -56,7 +48,7 @@ if (empty($_SESSION)) {
         }
     }
 
-    if (empty($_GET['app'])) {
+    if (empty($app)) {
         $template = 'forms';
     }
 } else {
@@ -70,12 +62,12 @@ if (empty($_SESSION)) {
         $cart = unserialize($_SESSION['cart']);
     }
 
-    if ($_GET['app'] === 'logout') {
+    if ($app === 'logout') {
         session_destroy();
         $template = 'forms';
     }
 
-    if ($_GET['app'] === 'addProduct') {
+    if ($app === 'addProduct') {
         $category = new \OOPStore\Category('TV');
         $price = rand(1000, 5000);
         $tvModel = rand(10, 70);
@@ -84,7 +76,7 @@ if (empty($_SESSION)) {
         $_SESSION['cart'] = serialize($cart);
     }
 
-    if ($_GET['app'] === 'removeProduct') {
+    if ($app === 'removeProduct') {
         $productIndex = $_GET['productId'] ?? 0;
 
         $products = $cart->getProducts();
@@ -96,7 +88,7 @@ if (empty($_SESSION)) {
     }
 }
 
-if (isset($customer)) {
+if (isset($customer) && $customer !== false) {
     $view->setVars('{FIRST_NAME}', $customer->getFirstName());
     $view->setVars('{LAST_NAME}', $customer->getLastName());
     $view->setVars('{EMAIL}', $customer->getEmail());

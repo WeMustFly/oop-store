@@ -6,19 +6,27 @@ class Output
 {
     private $vars = [];
 
+    public function __construct()
+    {
+        $this->setVars('{LOGIN_ERROR}', '');
+        $this->setVars('{REGISTER_ERROR}', '');
+        $this->setVars('{CART_TABLE}', '');
+        $this->setVars('{CART_TOTAL}', '0');
+    }
+
     public function outputHTML($template)
     {
         $html = file_get_contents('templates' . DIRECTORY_SEPARATOR . $template . '.html');
         echo str_replace(
-            array_keys($this->$vars),
-            array_values($this->$vars),
+            array_keys($this->vars),
+            array_values($this->vars),
             $html
         );
     }
 
     public function setVars($key, $value)
     {
-        $this->$vars[$key] = $value;
+        $this->vars[$key] = $value;
     }
 
     public function getVars()
