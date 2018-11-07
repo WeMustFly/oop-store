@@ -51,8 +51,6 @@ class Cart
     public function removeProduct(Product $product)
     {
         $removedProductKey = array_search($product, $this->products);
-        if ($removedProductKey) {
-            unset($this->products[$removedProductKey]);
-        }
+        unset($this->products[$removedProductKey]);
     }
 }
