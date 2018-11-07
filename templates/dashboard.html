@@ -1,0 +1,11 @@
+<h2>Hello, {FIRST_NAME} {LAST_NAME}</h2>
+<h3>Your E-mail is {EMAIL}</h2>
+<a href="/?app=logout">Logout</a>
+<hr>
+<a href="/?app=addProduct"><button>Add product to Cart</button></a>
+<hr>
+<table border="1">
+    <th>Category name</th><th>Product name</th><th>Price</th><th></th>
+    {CART_TABLE}
+    <tr><td colspan="4"><b>Total price: {CART_TOTAL}</b></td></tr>
+</table>
