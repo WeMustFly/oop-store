@@ -26,6 +26,11 @@ class Cart
         }
     }
 
+    public function getProducts()
+    {
+        return $this->products;
+    }
+
     public function getTotal()
     {
         $total = 0;
@@ -46,6 +51,8 @@ class Cart
     public function removeProduct(Product $product)
     {
         $removedProductKey = array_search($product, $this->products);
-        unset($this->products[$removedProductKey]);
+        if ($removedProductKey) {
+            unset($this->products[$removedProductKey]);
+        }
     }
 }

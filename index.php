@@ -3,36 +3,36 @@
 define('CLASSES_DIR', __DIR__ . DIRECTORY_SEPARATOR . 'classes');
 define('CUSTOMERS_FILE', 'customers.txt');
 
-$d = dir(CLASSES_DIR);
-while (false !== ($classFile = $d->read())) {
-    if ($classFile === '.' || $classFile === '..') {
-        continue;
-    }
-    require_once(CLASSES_DIR . DIRECTORY_SEPARATOR . $classFile);
-}
+spl_autoload_register(function ($class) {
+    $className = explode('\\', $class);
+    require_once(CLASSES_DIR . DIRECTORY_SEPARATOR . end($className) . '.php');
+});
 
 session_start();
+$view = new \OOPStore\Output();
 
-$vars['{LOGIN_ERROR}'] = '';
-$vars['{REGISTER_ERROR}'] = '';
+$view->setVars('{LOGIN_ERROR}', '');
+$view->setVars('{REGISTER_ERROR}', '');
+$view->setVars('{CART_TABLE}', '');
+$view->setVars('{CART_TOTAL}', '0');
+
 
 if (empty($_SESSION)) {
     if ($_GET['app'] === 'login') {
         $email = $_POST['email'] ?? 'default';
         $password = $_POST['password'] ?? 'default';
+        
         $auth = new \OOPStore\Auth();
         $customerAuth = new \OOPStore\Customer('', '', $email, $password);
 
         $customer = $auth->login($customerAuth);
         
         if ($customer !== false) {
-            $_SESSION['firstName'] = $customer->getFirstName();
-            $_SESSION['lastName'] = $customer->getLastName();
-            $_SESSION['email'] = $customer->getEmail();
+            $_SESSION['customer'] = serialize($customer);
             $template = 'dashboard';
         } else {
             $template = 'forms';
-            $vars['{LOGIN_ERROR}'] = 'Incorrect E-Mail or Password';
+            $view->setVars('{LOGIN_ERROR}', 'Incorrect E-Mail or Password');
         }
     }
 
@@ -48,13 +48,11 @@ if (empty($_SESSION)) {
         $customer = $auth->register($customerRegister);
         
         if ($customer !== false) {
-            $_SESSION['firstName'] = $customer->getFirstName();
-            $_SESSION['lastName'] = $customer->getLastName();
-            $_SESSION['email'] = $customer->getEmail();
+            $_SESSION['customer'] =  serialize($customer);
             $template = 'dashboard';
         } else {
             $template = 'forms';
-            $vars['{REGISTER_ERROR}'] = 'This email is already in use';
+            $view->setVars('{REGISTER_ERROR}', 'This email is already in use');
         }
     }
 
@@ -63,16 +61,50 @@ if (empty($_SESSION)) {
     }
 } else {
     $template = 'dashboard';
-    
+    $customer = unserialize($_SESSION['customer']);
+
+    if (empty($_SESSION['cart'])) {
+        $cart = new \OOPStore\Cart($customer);
+        $_SESSION['cart'] = serialize($cart);
+    } else {
+        $cart = unserialize($_SESSION['cart']);
+    }
+
     if ($_GET['app'] === 'logout') {
         session_destroy();
         $template = 'forms';
     }
+
+    if ($_GET['app'] === 'addProduct') {
+        $category = new \OOPStore\Category('TV');
+        $price = rand(1000, 5000);
+        $tvModel = rand(10, 70);
+        $product = new \OOPStore\Product($category, 'LG ' . $tvModel, $price);
+        $cart->addProduct($product);
+        $_SESSION['cart'] = serialize($cart);
+    }
+
+    if ($_GET['app'] === 'removeProduct') {
+        $productIndex = $_GET['productId'] ?? 0;
+
+        $products = $cart->getProducts();
+        if (in_array($products[$productIndex], $products)) {
+            $cart->removeProduct($products[$productIndex]);
+        }
+    
+        $_SESSION['cart'] = serialize($cart);
+    }
 }
 
-$vars['{FIRST_NAME}'] = $_SESSION['firstName'];
-$vars['{LAST_NAME}'] = $_SESSION['lastName'];
-$vars['{EMAIL}'] = $_SESSION['email'];
+if (isset($customer)) {
+    $view->setVars('{FIRST_NAME}', $customer->getFirstName());
+    $view->setVars('{LAST_NAME}', $customer->getLastName());
+    $view->setVars('{EMAIL}', $customer->getEmail());
+}
 
-$view = new \OOPStore\Output();
-$view->OutputHTML($vars, $template);
+if (isset($cart)) {
+    $view->setVars('{CART_TABLE}', $view->makeHtmlCart($cart));
+    $view->setVars('{CART_TOTAL}', $cart->getTotal());
+}
+
+$view->OutputHTML($template);

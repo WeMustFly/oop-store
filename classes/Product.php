@@ -31,4 +31,9 @@ class Product
     {
         return $this->category;
     }
+
+    public function getName()
+    {
+        return $this->name;
+    }
 }
