@@ -1,32 +1,34 @@
 <?php
 
+namespace OOPStore;
+
 define('CLASSES_DIR', __DIR__ . DIRECTORY_SEPARATOR . 'classes');
+define('INTERFACES_DIR', __DIR__ . DIRECTORY_SEPARATOR . 'interfaces');
 
-//require_once(CLASSES_DIR . '/Category.php'); 
-
-// http://php.net/manual/en/function.dir.php
-$d = dir(CLASSES_DIR);
-while (false !== ($classFile = $d->read())) {
-    if ($classFile === '.' || $classFile === '..') {
-        continue;
+function requireDir($dir)
+{
+    // http://php.net/manual/en/function.dir.php
+    $d = dir($dir);
+    while (false !== ($classFile = $d->read())) {
+        if ($classFile === '.' || $classFile === '..') {
+            continue;
+        }
+        require_once($dir . DIRECTORY_SEPARATOR . $classFile); 
     }
-    require_once(CLASSES_DIR . DIRECTORY_SEPARATOR . $classFile); 
 }
 
-$category = new \OOPStore\Category('TV');
-$product = new \OOPStore\Product($category, 'LG LX35', 1000000);
-$customer = new \OOPStore\Customer('Oleg', 'Lobanov');
-$cart = new \OOPStore\Cart($customer);
+requireDir(INTERFACES_DIR);
+requireDir(CLASSES_DIR);
 
-$cart->addProduct($product);
-$cart->addProduct($product);
+$category = new Category('TV');
+$product1 = new Product($category, 'LG LX35', 1000000);
+$product2 = new Product($category, 'LG LX35', 1000000);
+$store = new Store();
 
-echo "Total: ";
-var_dump($cart->getTotal());
+$store->addProduct($product1);
+$store->addProduct($product1);
+$store->addProduct($product2);
 
-$purchase = $cart->createPurchase();
+$store->removeProduct($product1);
 
-$cart->addProduct($product);
-
-echo "Total: ";
-var_dump($cart->getTotal());
+print_r($store->getProducts());
