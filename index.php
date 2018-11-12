@@ -1,24 +1,15 @@
 <?php
 
-namespace OOPStore;
+use OOPStore\Category;
+use OOPStore\Product;
+use OOPStore\Store;
 
-define('CLASSES_DIR', __DIR__ . DIRECTORY_SEPARATOR . 'classes');
-define('INTERFACES_DIR', __DIR__ . DIRECTORY_SEPARATOR . 'interfaces');
+\spl_autoload_register(function ($class) {
+    $classFilename = __DIR__ . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR
+        . \str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
 
-function requireDir($dir)
-{
-    // http://php.net/manual/en/function.dir.php
-    $d = dir($dir);
-    while (false !== ($classFile = $d->read())) {
-        if ($classFile === '.' || $classFile === '..') {
-            continue;
-        }
-        require_once($dir . DIRECTORY_SEPARATOR . $classFile); 
-    }
-}
-
-requireDir(INTERFACES_DIR);
-requireDir(CLASSES_DIR);
+    require $classFilename;
+});
 
 $category = new Category('TV');
 $product1 = new Product($category, 'LG LX35', 1000000);
