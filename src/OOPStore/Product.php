@@ -2,16 +2,16 @@
 
 namespace OOPStore;
 
-class Product
+class Product implements ProductInterface
 {
     private $id;
-    private $category;
+//    private $category;
     private $name;
     private $price;
 
-    static private $lastID = 0;
+    private static $lastID = 0;
 
-    public function __construct(Category $category, $name, $price)
+    public function __construct(Category $category, $name, $price)  // : ???????
     {
         $this->id = ++self::$lastID;
         $this->category = $category;
@@ -19,26 +19,26 @@ class Product
         $this->price = $price;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setPrice($price)
+    public function setPrice($price): float
     {
         if ($price > 0) {
             $this->price = $price;
         }
     }
 
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    public function getCategory()
-    {
-        return $this->category;
-    }
+ //   public function getCategory(): string
+ //   {
+ //       return $this->category;
+ //   }
 
 }

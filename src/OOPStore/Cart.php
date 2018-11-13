@@ -2,31 +2,31 @@
 
 namespace OOPStore;
 
-class Cart
+class Cart implements CartInterface
 {
     private $customer;
     private $products;
     private $purchase;
 
-    public function __construct(Customer $customer)
+    public function __construct(Customer $customer) // : ???????
     {
         $this->customer = $customer;
         $this->products = [];
     }
 
-    public function getCustomer()
+    public function getCustomer(): Customer  // or Cart
     {
         return $this->customer;
     }
 
-    public function addProduct(Product $product)
+    public function addProduct(Product $product)  // : ???????
     {
         if (empty($this->purchase)) {
-           $this->products[] = $product;
+            $this->products[] = $product;
         }
     }
 
-    public function getTotal()
+    public function getTotal(): float
     {
         $total = 0;
 
