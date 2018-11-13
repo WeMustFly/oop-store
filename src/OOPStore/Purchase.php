@@ -2,11 +2,11 @@
 
 namespace OOPStore;
 
-class Purchase
+class Purchase implements PurchaseInterface
 {
     private $cart;
 
-    public function __construct(Cart $cart)
+    public function __construct(Cart $cart)  // : ???????
     {
         $this->cart = $cart;
     }

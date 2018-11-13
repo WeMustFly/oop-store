@@ -6,19 +6,19 @@ class Category
 {
     private $name;
 
-    public function __construct($name)
+    public function __construct($name) // : ???????
     {
         $this->name = $name;
         // OR
         //$this->setName($name);
     }
 
-    public function setName($name)
+    public function setName($name): string
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
