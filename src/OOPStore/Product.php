@@ -2,7 +2,7 @@
 
 namespace OOPStore;
 
-class Product
+class Product implements ProductInterface
 {
     private $id;
     private $category;
@@ -19,7 +19,7 @@ class Product
         $this->price = $price;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -31,12 +31,12 @@ class Product
         }
     }
 
-    public function getPrice()
+    public function getPrice(): float
     {
         return $this->price;
     }
 
-    public function getCategory()
+    public function getCategory(): Category
     {
         return $this->category;
     }

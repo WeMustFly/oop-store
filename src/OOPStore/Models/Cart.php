@@ -1,6 +1,10 @@
 <?php
 
-namespace OOPStore;
+namespace OOPStore\Models;
+
+use OOPStore\Customer;
+use OOPStore\Product;
+use OOPStore\Purchase;
 
 class Cart
 {
